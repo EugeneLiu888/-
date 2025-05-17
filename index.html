@@ -1,56 +1,353 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
+<html lang="zh-TW">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>班級網站</title>
-    <link rel="stylesheet" href="styles.css">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>MI風格監控介面</title>
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+<style>
+  body {
+    margin: 0;
+    background: #000;
+    color: #0f0;
+    font-family: 'Orbitron', monospace, monospace;
+    overflow: hidden;
+  }
+
+  .screen {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    padding: 20px;
+    box-sizing: border-box;
+    display: none;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 20px;
+    height: 100%;
+  }
+
+  .camera-feed {
+    position: relative;
+    background: #001100;
+    border: 2px solid #0f0;
+    box-shadow: 0 0 20px #0f0aa;
+    overflow: hidden;
+    border-radius: 8px;
+  }
+
+  .camera-feed video,
+  .camera-feed img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: drop-shadow(0 0 5px #0f0);
+  }
+
+  /* 目標鎖定框 */
+  .target-box {
+    position: absolute;
+    border: 2px solid #ff0000;
+    box-shadow: 0 0 15px #ff0000;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% {
+      box-shadow: 0 0 15px #ff0000;
+    }
+    50% {
+      box-shadow: 0 0 30px #ff0000;
+    }
+  }
+
+  /* 掃描線 */
+  .scan-line {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, #0f0, transparent);
+    animation: scan 3s linear infinite;
+  }
+
+  @keyframes scan {
+    0% {
+      transform: translateY(-3px);
+      opacity: 0.8;
+    }
+    50% {
+      opacity: 0.4;
+    }
+    100% {
+      transform: translateY(100%);
+      opacity: 0.8;
+    }
+  }
+
+  /* 雷達圓環 */
+  .radar {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    width: 150px;
+    height: 150px;
+    border: 2px solid #5bc0de;
+    border-radius: 50%;
+    box-shadow: 0 0 30px #5bc0de;
+    overflow: hidden;
+  }
+
+  .radar::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 200%;
+    height: 200%;
+    background: conic-gradient(from 0deg, rgba(91, 192, 222, 0.4) 0deg 45deg, transparent 45deg 360deg);
+    transform-origin: center center;
+    border-radius: 50%;
+    animation: radar-spin 4s linear infinite;
+    filter: drop-shadow(0 0 15px #5bc0de);
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+
+  @keyframes radar-spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  /* 科技文字閃爍 */
+  .tech-text {
+    font-size: 14px;
+    letter-spacing: 0.15em;
+    color: #0f0;
+    text-shadow: 0 0 8px #0f0;
+    animation: flicker 1.5s infinite alternate;
+  }
+
+  @keyframes flicker {
+    from { opacity: 1; }
+    to { opacity: 0.5; }
+  }
+</style>
+<style>
+.intro-screen {
+  position: fixed;
+  z-index: 999;
+  background: black;
+  width: 100%;
+  height: 100%;
+  color: #5bc0de;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Orbitron', monospace;
+  animation: intro-fade 2s ease-in-out;
+}
+
+.intro-text {
+  font-size: 20px;
+  letter-spacing: 0.2em;
+  text-align: center;
+  margin-bottom: 30px;
+  animation: flicker 2s infinite alternate;
+  font-family: 'Pacifico', cursive;
+}
+
+#welcomeText {
+  font-family: 'Pacifico', cursive;
+}
+
+#siteText {
+  font-family: 'Pacifico', cursive;
+  font-size: 20px;
+}
+
+.slider-box {
+  margin-top: 10px;
+  width: fit-content;
+  padding: 10px;
+  background-color: rgba(0, 0, 0, 0.4);
+  border: 2px solid #5bc0de;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.slider-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 80%;
+  max-width: 300px;
+}
+
+.slider-text {
+  color: #5bc0de;
+  font-family: 'Orbitron', monospace;
+  font-size: 14px;
+  margin-bottom: 10px;
+  animation: glow 2s ease-in-out infinite alternate;
+}
+
+.slider {
+  width: 100%;
+  -webkit-appearance: none;
+  height: 12px;
+  border-radius: 6px;
+  background: #1a1a1a;
+  outline: none;
+  cursor: pointer;
+  box-shadow: 0 0 10px #5bc0de88;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #5bc0de;
+  border: 2px solid #fff;
+  box-shadow: 0 0 10px #5bc0de;
+  transition: 0.2s;
+}
+
+@keyframes glow {
+  from {
+    opacity: 0.5;
+    text-shadow: 0 0 5px #5bc0de;
+  }
+  to {
+    opacity: 1;
+    text-shadow: 0 0 20px #5bc0de;
+  }
+}
+
+@keyframes intro-fade {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+.slide-out {
+  animation: slideOut 0.6s forwards ease-in;
+}
+
+@keyframes slideOut {
+  0% { transform: translateY(0); opacity: 1; }
+  100% { transform: translateY(-100%); opacity: 0; }
+}
+</style>
 </head>
 <body>
-    <header style="background-color: transparent; padding: 10px 0; border-bottom: 1px solid #d1d1d6;">
-        <nav>
-            <ul style="display: flex; justify-content: center; list-style: none; margin: 0; padding: 0;">
-                <li style="margin: 0 30px;">
-                    <a href="https://drive.google.com/drive/folders/15O1etUzfVCB6r2ynGiy353ZItaZ_zP19?usp=sharing" style="text-decoration: none; color: #333; font-weight: bold; font-size: 14px; letter-spacing: 0.5px; text-transform: uppercase;">電子書</a>
-                </li>
-                <li style="margin: 0 30px;">
-                    <a href="https://eugeneliu888.github.io/findmy/" style="text-decoration: none; color: #333; font-weight: bold; font-size: 14px; letter-spacing: 0.5px; text-transform: uppercase;">🔒 歷史遍大</a>
-                </li>
-                <li style="margin: 0 30px;">
-                    <a href="https://www.nknush.kh.edu.tw" style="text-decoration: none; color: #333; font-weight: bold; font-size: 14px; letter-spacing: 0.5px; text-transform: uppercase;">學校網站</a>
-                </li>
-                <li style="margin: 0 30px;">
-                    <a href="https://1campus.net/s/j.nknush.kh.edu.tw/r/student/2244/g" style="text-decoration: none; color: #333; font-weight: bold; font-size: 14px; letter-spacing: 0.5px; text-transform: uppercase;">成績查詢</a>
-                </li>
-            </ul>
-        </nav>
-    </header>
-
-    <main>
-        <!-- 第一區塊 -->
-        <section class="hero" style="text-align: center; background: linear-gradient(to bottom, rgba(255,255,255,0.6), rgba(255,255,255,1)), url('照片1.JPEG') center/cover no-repeat; padding: 100px 20px;">
-            <h1>歡迎來到二義官網</h1>
-            <p>讓我們一起看</p>
-            <img src="官網第一張.JPEG" alt="照片1" style="max-width: 80%; height: auto; margin-top: 20px;">
-        </section>
-
-        <!-- 第二區塊 -->
-        <section class="hero" style="text-align: center; background: linear-gradient(to bottom, rgba(255,255,255,0.6), rgba(255,255,255,1)), url('照片2.JPEG') center/cover no-repeat; padding: 100px 20px;">
-            <h1>活動精彩回顧</h1>
-            <p>看看我們辦過的有趣活動！</p>
-            <img src="照片2.JPEG" alt="照片2" style="max-width: 80%; height: auto; margin-top: 20px;">
-        </section>
-
-        <!-- 第三區塊 -->
-        <section class="hero" style="text-align: center; background: linear-gradient(to bottom, rgba(255,255,255,0.6), rgba(255,255,255,1)), url('照片3.JPEG') center/cover no-repeat; padding: 100px 20px;">
-            <h1>學生成果</h1>
-            <p>我們的努力成果在這裡展示！</p>
-            <img src="照片3.JPEG" alt="照片3" style="max-width: 80%; height: auto; margin-top: 20px;">
-        </section>
-    </main>
-
-    <footer>
-        <p>© 2025 班級網站</p>
-    </footer>
+  <div class="intro-screen" id="introScreen">
+    <div class="intro-text" id="welcomeText">Hello</div>
+    <div class="intro-text" id="siteText" style="display:none;">
+      ASHS 115
+      <div class="slider-box">
+        <div class="slider-track">
+          <div class="slider-arrow">➤</div>
+          <div class="slider-text">slide to unlock</div>
+        </div>
+        <input type="range" min="0" max="100" value="0" class="slider" id="unlockSlider" />
+      </div>
+    </div>
+  </div>
+  <div class="screen">
+    <div class="tech-text">MISSION IMPOSSIBLE MONITORING SYSTEM</div>
+    <div class="grid">
+      <div class="camera-feed">
+        <img src="https://placekitten.com/400/300" alt="Camera 1" />
+        <div class="scan-line"></div>
+        <div class="target-box" style="top: 50px; left: 70px; width: 100px; height: 120px;"></div>
+      </div>
+      <div class="camera-feed">
+        <img src="https://placekitten.com/401/301" alt="Camera 2" />
+        <div class="scan-line"></div>
+      </div>
+      <div class="camera-feed">
+        <img src="https://placekitten.com/402/302" alt="Camera 3" />
+        <div class="scan-line"></div>
+      </div>
+      <div class="camera-feed">
+        <img src="https://placekitten.com/403/303" alt="Camera 4" />
+        <div class="scan-line"></div>
+      </div>
+    </div>
+    <div class="radar"></div>
+  </div>
 </body>
+<script>
+  function enterSystem() {
+    const intro = document.getElementById('introScreen');
+    // 播放音效（模擬開場）
+    try {
+      let ctx = new (window.AudioContext || window.webkitAudioContext)();
+      let o = ctx.createOscillator();
+      let g = ctx.createGain();
+      o.type = 'triangle';
+      o.frequency.value = 440;
+      g.gain.value = 0.08;
+      o.connect(g).connect(ctx.destination);
+      o.start();
+      setTimeout(() => {
+        o.frequency.linearRampToValueAtTime(120, ctx.currentTime + 0.4);
+        g.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.5);
+        setTimeout(() => { o.stop(); ctx.close(); }, 500);
+      }, 100);
+    } catch (e) {}
+    intro.classList.add("slide-out");
+    document.querySelector(".screen").style.display = "block";
+    setTimeout(() => {
+      intro.style.display = 'none';
+    }, 600);
+}
+
+.slider-track {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #222;
+  border-radius: 20px;
+  padding: 6px 12px;
+  margin-bottom: 8px;
+  box-shadow: inset 0 0 5px #5bc0de, 0 0 5px #5bc0de88;
+}
+
+.slider-arrow {
+  color: #5bc0de;
+  font-size: 18px;
+  margin-right: 10px;
+  animation: arrow-move 1s infinite alternate;
+}
+
+@keyframes arrow-move {
+  0% { transform: translateX(0); opacity: 0.5; }
+  100% { transform: translateX(5px); opacity: 1; }
+}
+  setTimeout(() => {
+    document.getElementById('welcomeText').style.display = 'none';
+    document.getElementById('siteText').style.display = 'block';
+  }, 1000);
+
+  document.getElementById('unlockSlider').addEventListener('input', function (e) {
+    if (e.target.value >= 100) {
+      enterSystem();
+    }
+  });
+</script>
 </html>
