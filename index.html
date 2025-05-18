@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>MI風格監控介面</title>
 <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <style>
   body {
     margin: 0;
@@ -34,7 +35,7 @@
     position: relative;
     background: #001100;
     border: 2px solid #0f0;
-    box-shadow: 0 0 20px #0f0aa;
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.4);
     overflow: hidden;
     border-radius: 8px;
   }
@@ -169,88 +170,94 @@
   font-family: 'Pacifico', cursive;
 }
 
+@keyframes slideInFade {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 #siteText {
   font-family: 'Pacifico', cursive;
   font-size: 20px;
 }
 
-.slider-box {
-  margin-top: 10px;
-  width: fit-content;
-  padding: 10px;
-  background-color: rgba(0, 0, 0, 0.4);
-  border: 2px solid #5bc0de;
-  border-radius: 8px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-left: auto;
-  margin-right: auto;
+#siteText.animate {
+  animation: slideInFade 0.6s ease-out forwards;
 }
 
-.slider-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 80%;
-  max-width: 300px;
-}
 
-.slider-text {
-  color: #5bc0de;
-  font-family: 'Orbitron', monospace;
-  font-size: 14px;
-  margin-bottom: 10px;
-  animation: glow 2s ease-in-out infinite alternate;
-}
 
-.slider {
-  width: 100%;
-  -webkit-appearance: none;
-  height: 12px;
-  border-radius: 6px;
-  background: #1a1a1a;
-  outline: none;
-  cursor: pointer;
-  box-shadow: 0 0 10px #5bc0de88;
-}
-
-.slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: #5bc0de;
-  border: 2px solid #fff;
-  box-shadow: 0 0 10px #5bc0de;
-  transition: 0.2s;
-}
-
-@keyframes glow {
-  from {
-    opacity: 0.5;
-    text-shadow: 0 0 5px #5bc0de;
+  .slider-track {
+    cursor: pointer;
+    width: 220px;
+    height: 40px;
+    background: linear-gradient(90deg, rgba(11, 195, 112, 0.3), rgba(13, 179, 112, 0.15));
+    border-radius: 20px;
+    box-shadow: 0 0 15px rgba(11, 195, 112, 0.6) inset;
+    padding: 0 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    user-select: none;
+    transition: background 0.3s ease;
   }
-  to {
-    opacity: 1;
-    text-shadow: 0 0 20px #5bc0de;
+
+  .slider-track:hover {
+    background: linear-gradient(90deg, rgba(11, 195, 112, 0.5), rgba(13, 179, 112, 0.3));
   }
-}
 
-@keyframes intro-fade {
-  0% { opacity: 0; }
-  100% { opacity: 1; }
-}
+  .slider-thumb {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.2s ease;
+    cursor: default; /* 圖片不單獨點擊 */
+    border-radius: 0;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    filter: drop-shadow(0 0 5px #0bcb70);
+  }
 
-.slide-out {
-  animation: slideOut 0.6s forwards ease-in;
-}
+  .slider-thumb img {
+    width: 70%;
+    height: 70%;
+    object-fit: contain;
+    filter: drop-shadow(0 0 5px #0bcb70);
+    pointer-events: none;
+    user-select: none;
+  }
 
-@keyframes slideOut {
-  0% { transform: translateY(0); opacity: 1; }
-  100% { transform: translateY(-100%); opacity: 0; }
-}
+  .slider-track:hover .slider-thumb {
+    transform: scale(1.15);
+    filter: drop-shadow(0 0 12px #0bcb70);
+  }
+
+  .slider-text {
+    color: #0bcb70;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 16px;
+    letter-spacing: 0.25em;
+    font-weight: 700;
+    text-transform: uppercase;
+    text-shadow:
+      0 0 5px #0bcb70,
+      0 0 10px #0bcb70,
+      0 0 20px #0bcb70,
+      0 0 40px #0bcb70;
+    user-select: none;
+    margin: 0;
+    white-space: nowrap;
+    opacity: 0.85;
+  }
 </style>
 </head>
 <body>
@@ -260,10 +267,11 @@
       ASHS 115
       <div class="slider-box">
         <div class="slider-track">
-          <div class="slider-arrow">➤</div>
-          <div class="slider-text">slide to unlock</div>
+          <div class="slider-thumb" id="unlockThumb" title="點擊解鎖">
+            <img src="Touch ID Logo Illustration.webp" alt="Touch ID Logo" />
+          </div>
+          <div class="slider-text">Touch to Unlock</div>
         </div>
-        <input type="range" min="0" max="100" value="0" class="slider" id="unlockSlider" />
       </div>
     </div>
   </div>
@@ -292,6 +300,14 @@
   </div>
 </body>
 <script>
+  // 顯示 Hello 2 秒後切換至 ASHS 115 義官網
+  setTimeout(() => {
+    document.getElementById('welcomeText').style.display = 'none';
+    const site = document.getElementById('siteText');
+    site.style.display = 'block';
+    site.classList.add('animate');
+  }, 2000);
+
   function enterSystem() {
     const intro = document.getElementById('introScreen');
     // 播放音效（模擬開場）
@@ -315,39 +331,9 @@
     setTimeout(() => {
       intro.style.display = 'none';
     }, 600);
-}
+  }
 
-.slider-track {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #222;
-  border-radius: 20px;
-  padding: 6px 12px;
-  margin-bottom: 8px;
-  box-shadow: inset 0 0 5px #5bc0de, 0 0 5px #5bc0de88;
-}
-
-.slider-arrow {
-  color: #5bc0de;
-  font-size: 18px;
-  margin-right: 10px;
-  animation: arrow-move 1s infinite alternate;
-}
-
-@keyframes arrow-move {
-  0% { transform: translateX(0); opacity: 0.5; }
-  100% { transform: translateX(5px); opacity: 1; }
-}
-  setTimeout(() => {
-    document.getElementById('welcomeText').style.display = 'none';
-    document.getElementById('siteText').style.display = 'block';
-  }, 1000);
-
-  document.getElementById('unlockSlider').addEventListener('input', function (e) {
-    if (e.target.value >= 100) {
-      enterSystem();
-    }
-  });
+  // 改為整個 slider-track 可點擊觸發
+  document.querySelector('.slider-track').addEventListener('click', enterSystem);
 </script>
 </html>
