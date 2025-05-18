@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>MI風格監控介面</title>
+<title>IMF風格</title>
 <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <style>
@@ -33,9 +33,9 @@
 
   .camera-feed {
     position: relative;
-    background: #001100;
-    border: 2px solid #0f0;
-    box-shadow: 0 0 20px rgba(0, 255, 0, 0.4);
+    background: #001822;
+    border: 2px solid #5bc0de;
+    box-shadow: 0 0 20px rgba(91, 192, 222, 0.4);
     overflow: hidden;
     border-radius: 8px;
   }
@@ -45,15 +45,7 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    filter: drop-shadow(0 0 5px #0f0);
-  }
-
-  /* 目標鎖定框 */
-  .target-box {
-    position: absolute;
-    border: 2px solid #ff0000;
-    box-shadow: 0 0 15px #ff0000;
-    animation: pulse 2s infinite;
+    filter: drop-shadow(0 0 5px #5bc0de);
   }
 
   @keyframes pulse {
@@ -62,68 +54,6 @@
     }
     50% {
       box-shadow: 0 0 30px #ff0000;
-    }
-  }
-
-  /* 掃描線 */
-  .scan-line {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 3px;
-    background: linear-gradient(90deg, transparent, #0f0, transparent);
-    animation: scan 3s linear infinite;
-  }
-
-  @keyframes scan {
-    0% {
-      transform: translateY(-3px);
-      opacity: 0.8;
-    }
-    50% {
-      opacity: 0.4;
-    }
-    100% {
-      transform: translateY(100%);
-      opacity: 0.8;
-    }
-  }
-
-  /* 雷達圓環 */
-  .radar {
-    position: absolute;
-    bottom: 20px;
-    right: 20px;
-    width: 150px;
-    height: 150px;
-    border: 2px solid #5bc0de;
-    border-radius: 50%;
-    box-shadow: 0 0 30px #5bc0de;
-    overflow: hidden;
-  }
-
-  .radar::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 200%;
-    height: 200%;
-    background: conic-gradient(from 0deg, rgba(91, 192, 222, 0.4) 0deg 45deg, transparent 45deg 360deg);
-    transform-origin: center center;
-    border-radius: 50%;
-    animation: radar-spin 4s linear infinite;
-    filter: drop-shadow(0 0 15px #5bc0de);
-    transform: translate(-50%, -50%) rotate(0deg);
-  }
-
-  @keyframes radar-spin {
-    from {
-      transform: rotate(0deg);
-    }
-    to {
-      transform: rotate(360deg);
     }
   }
 
@@ -140,8 +70,108 @@
     from { opacity: 1; }
     to { opacity: 0.5; }
   }
-</style>
-<style>
+.checkmark-screen {
+  position: fixed;
+  z-index: 1000;
+  background: black;
+  width: 100%;
+  height: 100%;
+  color: #5bc0de;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Orbitron', monospace;
+  flex-direction: column;
+}
+
+.checkmark-container {
+  perspective: 600px;
+}
+
+.checkmark {
+  width: 100px;
+  height: 100px;
+  stroke: url(#laserGradient);
+  stroke-width: 5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+  border-radius: 50%;
+  background-color: black;
+  overflow: hidden;
+  /* animation: scaleIn 0.5s ease-out forwards; */
+  /* 強化發光效果 */
+}
+
+.checkmark-circle {
+  stroke: #5bc0de;
+  stroke-dasharray: 166;
+  stroke-dashoffset: 0;
+  animation: rotateCircle 2s linear infinite;
+}
+
+@keyframes rotateCircle {
+  0% {
+    transform: rotate(0deg);
+    transform-origin: center;
+  }
+  100% {
+    transform: rotate(360deg);
+    transform-origin: center;
+  }
+}
+
+.checkmark-check {
+  stroke-dasharray: 48;
+  stroke-dashoffset: 48;
+  animation: laserStroke 1.2s ease-in-out forwards;
+  /* 白色高光陰影強調邊緣 */
+}
+
+@keyframes strokeArc {
+  to {
+    stroke-dashoffset: 66;
+  }
+}
+
+@keyframes laserStroke {
+  0% {
+    stroke-dashoffset: 48;
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 0.2;
+  }
+}
+
+/*@keyframes scaleIn {
+  from {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}*/
+
+.checkmark-text {
+  margin-top: 20px;
+  font-size: 24px;
+  color: #5bc0de;
+  text-shadow: 0 0 8px #5bc0de;
+  animation: fadeIn 1s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 .intro-screen {
   position: fixed;
   z-index: 999;
@@ -158,7 +188,7 @@
 }
 
 .intro-text {
-  font-size: 20px;
+  font-size: 40px;
   letter-spacing: 0.2em;
   text-align: center;
   margin-bottom: 30px;
@@ -183,22 +213,20 @@
 
 #siteText {
   font-family: 'Pacifico', cursive;
-  font-size: 20px;
+  font-size: 32px;
 }
 
 #siteText.animate {
   animation: slideInFade 0.6s ease-out forwards;
 }
 
-
-
   .slider-track {
     cursor: pointer;
     width: 220px;
     height: 40px;
-    background: linear-gradient(90deg, rgba(11, 195, 112, 0.3), rgba(13, 179, 112, 0.15));
+    background: linear-gradient(90deg, rgba(91, 192, 222, 0.3), rgba(91, 192, 222, 0.15));
     border-radius: 20px;
-    box-shadow: 0 0 15px rgba(11, 195, 112, 0.6) inset;
+    box-shadow: 0 0 15px rgba(91, 192, 222, 0.6) inset;
     padding: 0 15px;
     display: flex;
     justify-content: center;
@@ -209,7 +237,7 @@
   }
 
   .slider-track:hover {
-    background: linear-gradient(90deg, rgba(11, 195, 112, 0.5), rgba(13, 179, 112, 0.3));
+    background: linear-gradient(90deg, rgba(91, 192, 222, 0.5), rgba(91, 192, 222, 0.3));
   }
 
   .slider-thumb {
@@ -224,47 +252,86 @@
     background: transparent;
     border: none;
     box-shadow: none;
-    filter: drop-shadow(0 0 5px #0bcb70);
+    filter: drop-shadow(0 0 5px #5bc0de);
   }
 
   .slider-thumb img {
     width: 70%;
     height: 70%;
     object-fit: contain;
-    filter: drop-shadow(0 0 5px #0bcb70);
+    filter: drop-shadow(0 0 5px #5bc0de);
     pointer-events: none;
     user-select: none;
   }
 
   .slider-track:hover .slider-thumb {
     transform: scale(1.15);
-    filter: drop-shadow(0 0 12px #0bcb70);
+    filter: drop-shadow(0 0 12px #5bc0de);
   }
 
   .slider-text {
-    color: #0bcb70;
+    color: #5bc0de;
     font-family: 'Courier New', Courier, monospace;
     font-size: 16px;
     letter-spacing: 0.25em;
     font-weight: 700;
     text-transform: uppercase;
     text-shadow:
-      0 0 5px #0bcb70,
-      0 0 10px #0bcb70,
-      0 0 20px #0bcb70,
-      0 0 40px #0bcb70;
+      0 0 5px #5bc0de,
+      0 0 10px #5bc0de,
+      0 0 20px #5bc0de,
+      0 0 40px #5bc0de;
     user-select: none;
     margin: 0;
     white-space: nowrap;
     opacity: 0.85;
   }
+
+  .marquee-container {
+    position: relative;
+    overflow: hidden;
+    height: 30px;
+    background: #001822;
+    border: 2px solid #5bc0de;
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(91, 192, 222, 0.6);
+    color: #5bc0de;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 14px;
+    line-height: 30px;
+    white-space: nowrap;
+  }
+
+  .marquee {
+    display: inline-block;
+    padding-left: 100%;
+    animation: marqueeAnim 15s linear infinite;
+  }
+
+  @keyframes marqueeAnim {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-100%); }
+  }
+
+  #marqueeInput {
+    width: 100%;
+    margin-top: 10px;
+    padding: 5px 10px;
+    background: #001822;
+    border: 2px solid #5bc0de;
+    border-radius: 8px;
+    color: #5bc0de;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 14px;
+    outline: none;
+  }
 </style>
 </head>
 <body>
   <div class="intro-screen" id="introScreen">
-    <div class="intro-text" id="welcomeText">Hello</div>
+    <div class="intro-text" id="welcomeText">hello</div>
     <div class="intro-text" id="siteText" style="display:none;">
-      ASHS 115
+      ASHS 115 yi
       <div class="slider-box">
         <div class="slider-track">
           <div class="slider-thumb" id="unlockThumb" title="點擊解鎖">
@@ -275,42 +342,69 @@
       </div>
     </div>
   </div>
+  <div class="checkmark-screen" id="checkmarkScreen">
+    <div class="checkmark-container">
+      <svg class="checkmark" viewBox="0 0 52 52">
+        <defs>
+          <linearGradient id="laserGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#5bc0de" stop-opacity="0.2" />
+            <stop offset="50%" stop-color="#5bc0de" stop-opacity="1" />
+            <stop offset="100%" stop-color="#5bc0de" stop-opacity="0.2" />
+          </linearGradient>
+        </defs>
+        <circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none" />
+        <path class="checkmark-check" fill="none" d="M14 27l7 7 16-16" />
+      </svg>
+    </div>
+    <div class="checkmark-text">Success</div>
+  </div>
   <div class="screen">
     <div class="tech-text">MISSION IMPOSSIBLE MONITORING SYSTEM</div>
     <div class="grid">
       <div class="camera-feed">
-        <img src="https://placekitten.com/400/300" alt="Camera 1" />
-        <div class="scan-line"></div>
-        <div class="target-box" style="top: 50px; left: 70px; width: 100px; height: 120px;"></div>
-      </div>
-      <div class="camera-feed">
-        <img src="https://placekitten.com/401/301" alt="Camera 2" />
+        <div class="tech-text" style="color: #6bc0f7; text-shadow: 0 0 6px #6bc0f7; padding-left: 12px;">電子書</div>
+        <a href="https://drive.google.com/drive/folders/15O1etUzfVCB6r2ynGiy353ZItaZ_zP19?usp=sharing" target="_blank" rel="noopener noreferrer">
+          <img src="電子書.png" alt="電子書" />
+        </a>
         <div class="scan-line"></div>
       </div>
       <div class="camera-feed">
-        <img src="https://placekitten.com/402/302" alt="Camera 3" />
+        <div class="tech-text" style="color: #6bc0f7; text-shadow: 0 0 6px #6bc0f7; padding-left: 12px;">網頁更新日記</div>
+        <a href="https://eugeneliu888.github.io/update-note-high-Quality/" target="_blank" rel="noopener noreferrer">
+          <img src="網頁更新.jpeg" alt="網頁更新日記" />
+        </a>
         <div class="scan-line"></div>
       </div>
       <div class="camera-feed">
-        <img src="https://placekitten.com/403/303" alt="Camera 4" />
+        <div class="tech-text" style="color: #6bc0f7; text-shadow: 0 0 6px #6bc0f7;">🔒歷史遍很大</div>
+        <a href="https://eugeneliu888.github.io/findmy/" target="_blank" rel="noopener noreferrer">
+          <img src="小豹紋.jpg" alt="歷史騙很大" />
+        </a>
         <div class="scan-line"></div>
       </div>
-    </div>
-    <div class="radar"></div>
-  </div>
+      <div class="camera-feed">
+        <div class="marquee-container">
+          <div class="marquee" id="marquee">這裡是跑馬燈訊息，請在下方輸入新訊息！</div>
+        </div>
+        <div class="scan-line"></div>
+        <div class="tech-text"></div>
+      </div>
+    </div> <!-- .grid 結束 -->
+
+  </div> <!-- .screen 結束 -->
 </body>
 <script>
-  // 顯示 Hello 2 秒後切換至 ASHS 115 義官網
+  // 顯示 Hello 1.5 秒後切換至 ASHS 115 義官網
   setTimeout(() => {
     document.getElementById('welcomeText').style.display = 'none';
     const site = document.getElementById('siteText');
     site.style.display = 'block';
     site.classList.add('animate');
-  }, 2000);
+  }, 1500);
 
   function enterSystem() {
     const intro = document.getElementById('introScreen');
-    // 播放音效（模擬開場）
+    const checkmark = document.getElementById('checkmarkScreen');
     try {
       let ctx = new (window.AudioContext || window.webkitAudioContext)();
       let o = ctx.createOscillator();
@@ -326,14 +420,36 @@
         setTimeout(() => { o.stop(); ctx.close(); }, 500);
       }, 100);
     } catch (e) {}
+
     intro.classList.add("slide-out");
-    document.querySelector(".screen").style.display = "block";
     setTimeout(() => {
       intro.style.display = 'none';
+      checkmark.style.display = 'flex';
     }, 600);
+
+    setTimeout(() => {
+      checkmark.style.display = 'none';
+      document.querySelector(".screen").style.display = "block";
+    }, 2000);
   }
 
   // 改為整個 slider-track 可點擊觸發
   document.querySelector('.slider-track').addEventListener('click', enterSystem);
+
+  // Marquee input logic
+  const marquee = document.getElementById('marquee');
+
+  // 跑馬燈訊息自動抓取（Google Apps Script API）
+  async function fetchMarquee() {
+    try {
+      const res = await fetch('https://script.google.com/macros/s/AKfycbz3FimJvX1FPCV62DilmxeKxhDhEwXcAUY5J-eY4X_ax5mJnLfGG6fWSvus4De9KsVz/exec');
+      const data = await res.json();
+      document.getElementById('marquee').textContent = data.message;
+    } catch (e) {
+      console.error('跑馬燈訊息讀取失敗', e);
+    }
+  }
+  fetchMarquee();
+  setInterval(fetchMarquee, 2000);
 </script>
 </html>
