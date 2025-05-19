@@ -33,11 +33,7 @@
 
   .camera-feed {
     position: relative;
-    background: #001822;
-    border: 2px solid #5bc0de;
-    box-shadow: 0 0 20px rgba(91, 192, 222, 0.4);
     overflow: hidden;
-    border-radius: 8px;
   }
 
   .camera-feed video,
@@ -64,6 +60,9 @@
     color: #0f0;
     text-shadow: 0 0 8px #0f0;
     animation: flicker 1.5s infinite alternate;
+  }
+  .tech-text.no-flicker {
+    animation: none !important;
   }
 
   /* 藝文類圖片樣式，橢圓放大且無邊框背景 */
@@ -383,27 +382,49 @@
       <div class="camera-feed">
         <div class="tech-text" style="color: #6bc0f7; text-shadow: 0 0 6px #6bc0f7; padding-left: 12px;">網頁更新日記</div>
         <a href="https://eugeneliu888.github.io/update-note-high-Quality/" target="_blank" rel="noopener noreferrer">
-          <img src="網頁更新.jpeg" alt="網頁更新日記" />
+          <img src="網頁更新Ai.png" alt="網頁更新日記" />
         </a>
         <div class="scan-line"></div>
       </div>
       <div class="camera-feed">
         <div class="tech-text" style="color: #6bc0f7; text-shadow: 0 0 6px #6bc0f7;">🔒歷史遍很大</div>
         <a href="https://eugeneliu888.github.io/findmy/" target="_blank" rel="noopener noreferrer">
-          <img src="小豹紋.jpg" alt="歷史騙很大" />
+          <img src="小豹紋Ai.png" alt="歷史騙很大" />
         </a>
         <div class="scan-line"></div>
       </div>
       <div class="camera-feed">
-        <div class="tech-text" style="color: #6bc0f7; text-shadow: 0 0 6px #6bc0f7;">藝文類</div>
-        <a href="https://example.com/art" target="_blank" rel="noopener noreferrer">
-          <img src="art.jpg" alt="藝文類圖片" style="border-radius: 50%; border: 3px solid #5bc0de; padding: 4px; background: #001822;" />
-        </a>
+        <div class="tech-text" style="color: #6bc0f7; text-shadow: 0 0 6px #6bc0f7; padding-left: 12px;">藝文類</div>
+        <div class="art-trigger" onclick="showArtScreen()">
+          <img src="art.jpg" alt="藝文類圖片" style="border-radius: 40% / 60%; width: 120%; display: block; margin: 0 auto;" />
+        </div>
         <div class="scan-line"></div>
       </div>
     </div> <!-- .grid 結束 -->
 
   </div> <!-- .screen 結束 -->
+
+  <!-- 藝文四格畫面 -->
+  <div class="screen art-screen" style="display:none;">
+    <div class="grid">
+      <div class="camera-feed">
+        <div class="tech-text">108 記憶中的風</div>
+        <img src="art1.jpg" alt="108 記憶中的風" />
+      </div>
+      <div class="camera-feed">
+        <div class="tech-text">108 驚險的旅程</div>
+        <img src="art2.jpg" alt="108 驚險的旅程" />
+      </div>
+      <div class="camera-feed">
+        <div class="tech-text">109 十年的流星</div>
+        <img src="art3.jpg" alt="109 十年的流星" />
+      </div>
+      <div class="camera-feed">
+        <div class="tech-text">109 泡泡</div>
+        <img src="art4.jpg" alt="109 泡泡" />
+      </div>
+    </div>
+  </div>
   <audio id="unlockAudio" src="Apple Intelligence Sound.mp3" preload="auto"></audio>
 </body>
 <script>
@@ -464,3 +485,8 @@
   setInterval(fetchMarquee, 2000);
 </script>
 </html>
+  // 藝文類四格顯示
+  function showArtScreen() {
+    document.querySelectorAll(".screen").forEach(el => el.style.display = "none");
+    document.querySelector(".art-screen").style.display = "block";
+  }
