@@ -66,6 +66,18 @@
     animation: flicker 1.5s infinite alternate;
   }
 
+  /* 藝文類圖片樣式，橢圓放大且無邊框背景 */
+  .camera-feed > div.tech-text[style*="藝文類"] + a > img {
+    border-radius: 40% / 60%; /* 橢圓形比例，寬度偏大 */
+    border: none; /* 移除藍色邊框 */
+    padding: 0; /* 移除內距 */
+    background: transparent; /* 移除背景色 */
+    width: 120%; /* 放大圖片寬度 */
+    height: auto;
+    display: block;
+    margin: 0 auto;
+  }
+
   @keyframes flicker {
     from { opacity: 1; }
     to { opacity: 0.5; }
@@ -383,15 +395,16 @@
         <div class="scan-line"></div>
       </div>
       <div class="camera-feed">
-        <div class="marquee-container">
-          <div class="marquee" id="marquee">這裡是跑馬燈訊息，請在下方輸入新訊息！</div>
-        </div>
+        <div class="tech-text" style="color: #6bc0f7; text-shadow: 0 0 6px #6bc0f7;">藝文類</div>
+        <a href="https://example.com/art" target="_blank" rel="noopener noreferrer">
+          <img src="art.jpg" alt="藝文類圖片" style="border-radius: 50%; border: 3px solid #5bc0de; padding: 4px; background: #001822;" />
+        </a>
         <div class="scan-line"></div>
-        <div class="tech-text"></div>
       </div>
     </div> <!-- .grid 結束 -->
 
   </div> <!-- .screen 結束 -->
+  <audio id="unlockAudio" src="Apple Intelligence Sound.mp3" preload="auto"></audio>
 </body>
 <script>
   // 顯示 Hello 1.5 秒後切換至 ASHS 115 義官網
@@ -405,21 +418,19 @@
   function enterSystem() {
     const intro = document.getElementById('introScreen');
     const checkmark = document.getElementById('checkmarkScreen');
+
     try {
-      let ctx = new (window.AudioContext || window.webkitAudioContext)();
-      let o = ctx.createOscillator();
-      let g = ctx.createGain();
-      o.type = 'triangle';
-      o.frequency.value = 440;
-      g.gain.value = 0.08;
-      o.connect(g).connect(ctx.destination);
-      o.start();
-      setTimeout(() => {
-        o.frequency.linearRampToValueAtTime(120, ctx.currentTime + 0.4);
-        g.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.5);
-        setTimeout(() => { o.stop(); ctx.close(); }, 500);
-      }, 100);
-    } catch (e) {}
+      const audio = document.getElementById('unlockAudio');
+      audio.volume = 0.7; // 調大音量，避免太小聲
+      audio.currentTime = 0; // 確保從頭播放
+      audio.play().then(() => {
+        console.log('音效播放成功');
+      }).catch(e => {
+        console.warn('音效播放失敗:', e);
+      });
+    } catch (e) {
+      console.warn('音效播放失敗:', e);
+    }
 
     intro.classList.add("slide-out");
     setTimeout(() => {
